@@ -6,7 +6,7 @@ services:
     name: trafficiq
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements-api.txt
     startCommand: uvicorn api.server:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
