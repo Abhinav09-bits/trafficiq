@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node / React
+web/node_modules/
+# NOTE: web/dist/ is committed on purpose so the host serves the built React app
+#       without needing Node (single-service Docker-free deploy).
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Streamlit
+.streamlit/secrets.toml

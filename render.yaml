@@ -1,0 +1,13 @@
+# One-click deploy config for Render (https://render.com) — no Docker needed.
+# Render reads this file and creates a free Python web service that runs
+# FastAPI, which serves BOTH the API and the pre-built React app on one URL.
+services:
+  - type: web
+    name: trafficiq
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
