@@ -1,16 +1,14 @@
 {
-  "duration": {
-    "MAE_hours": 2.756,
-    "R2": 0.125,
-    "n_train": 2118,
-    "n_test": 530
-  },
   "level": {
-    "accuracy": 0.786,
-    "precision_macro": 0.637,
-    "recall_macro": 0.53,
-    "f1_macro": 0.552,
-    "n_train": 6525,
-    "n_test": 1632
+    "accuracy": 0.833,
+    "accuracy_std": 0.009,
+    "precision_macro": 0.715,
+    "recall_macro": 0.669,
+    "f1_macro": 0.686,
+    "cv": "5-fold stratified"
+  },
+  "duration": {
+    "MAE_hours": 2.784,
+    "R2": 0.105
   }
 }

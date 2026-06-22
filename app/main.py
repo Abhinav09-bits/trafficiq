@@ -145,6 +145,7 @@ st.session_state.setdefault("go", False)
 
 
 def predict(event):
+    fmap = enc["freq_maps"]
     row = {
         "event_type": event["etype"], "event_cause": event["cause"],
         "veh_type": event["veh"], "corridor": event["corridor"],
@@ -157,11 +158,14 @@ def predict(event):
         else (1.0 if event["corridor"] != "Non-corridor" else 0.7),
         "is_event": 1 if event["cause"] in
         {"public_event", "procession", "vip_movement", "protest"} else 0,
+        "zone_freq": fmap["zone"].get(event["zone"], 0.0),
+        "corridor_freq": fmap["corridor"].get(event["corridor"], 0.0),
     }
-    X = pd.DataFrame([row])[enc["features"]].copy()
+    X = pd.DataFrame([row])
     X[enc["cat"]] = enc["encoder"].transform(X[enc["cat"]].astype(str))
-    level = int(clf.predict(X)[0])
-    dur = float(max(0, reg.predict(X)[0]))
+    dur = float(max(0, reg.predict(X[enc["reg_features"]])[0]))
+    X["pred_duration"] = dur
+    level = int(clf.predict(X[enc["clf_features"]])[0])
     dur = max(dur, {1: 0.3, 2: 0.6, 3: 1.2, 4: 2.0}.get(level, 0.5))
     return level, dur
 

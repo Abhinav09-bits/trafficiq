@@ -42,7 +42,9 @@ place, where to divert traffic, and for how long to hold incoming flow. It is a
 ```
 
 - **Model A** – LightGBM regressor → predicts block duration (hours)
-- **Model B** – LightGBM classifier → predicts congestion level (Accuracy ≈ **78.6%**)
+- **Model B** – LightGBM classifier → predicts congestion level. Its prediction is
+  **stacked**: Model A's predicted duration is fed in as a feature, lifting accuracy to
+  **83.3% (5-fold cross-validated)**
 - **Action Engine** – rule-based, fully explainable; "calm zone" ranking is learned from
   the data (zones with the fewest / shortest recent disruptions = best diversion targets)
 
@@ -151,9 +153,9 @@ Then open **http://localhost:8501** in your browser.
 
 | Model | Metric | Score |
 |-------|--------|-------|
-| Congestion Level (classifier) | Accuracy | **78.6%** |
-| Congestion Level (classifier) | F1 (macro) | 0.55 |
-| Block-time (regressor) | MAE | ~2.7 hours |
+| Congestion Level (classifier) | Accuracy (5-fold CV) | **83.3%** |
+| Congestion Level (classifier) | F1 (macro) | 0.69 |
+| Block-time (regressor) | MAE | ~2.8 hours |
 
 > Note: block-time is reported as an **estimate** — many records lack a precise clearance
 > time, so the level prediction is the stronger signal. The dataset is an *event log*, not a

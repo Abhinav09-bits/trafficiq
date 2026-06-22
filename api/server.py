@@ -55,6 +55,7 @@ class EventIn(BaseModel):
 
 def _predict(e: EventIn):
     cat = enc["cat"]
+    fmap = enc["freq_maps"]
     row = {
         "event_type": e.etype, "event_cause": e.cause, "veh_type": e.veh,
         "corridor": e.corridor, "priority": e.priority, "hour": e.hour,
@@ -66,11 +67,15 @@ def _predict(e: EventIn):
         else (1.0 if e.corridor != "Non-corridor" else 0.7),
         "is_event": 1 if e.cause in
         {"public_event", "procession", "vip_movement", "protest"} else 0,
+        "zone_freq": fmap["zone"].get(e.zone, 0.0),
+        "corridor_freq": fmap["corridor"].get(e.corridor, 0.0),
     }
-    X = pd.DataFrame([row])[enc["features"]].copy()
+    X = pd.DataFrame([row])
     X[cat] = enc["encoder"].transform(X[cat].astype(str))
-    level = int(clf.predict(X)[0])
-    dur = float(max(0, reg.predict(X)[0]))
+    # 1) predict duration, 2) feed it into the level classifier (stacked)
+    dur = float(max(0, reg.predict(X[enc["reg_features"]])[0]))
+    X["pred_duration"] = dur
+    level = int(clf.predict(X[enc["clf_features"]])[0])
     dur = max(dur, {1: 0.3, 2: 0.6, 3: 1.2, 4: 2.0}.get(level, 0.5))
     return level, dur
 
